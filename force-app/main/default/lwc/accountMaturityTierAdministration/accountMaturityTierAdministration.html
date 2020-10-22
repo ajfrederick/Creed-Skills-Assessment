@@ -1,0 +1,187 @@
+<template>
+    <lightning-spinner if:true={isLoading} alternative-text="Loading..."></lightning-spinner>
+    <!-- Card to display tier info -->
+    <lightning-card if:false={isLoading} title={title}>
+        <!-- New Button for actions slot -->
+        <lightning-button
+            label="New"
+            name="new"
+            variant="Neutral"
+            onclick={add}
+            slot="actions"
+        ></lightning-button>
+
+         <!-- Save Button for footer slot -->
+        <lightning-button
+            label="Save"
+            name="save"
+            variant="Brand"
+            onclick={save}
+            slot="footer"
+            disabled={disableSave}
+            padding="horizontal-small"
+        ></lightning-button>
+
+         <!-- Cancel Button for footer slot -->
+         <lightning-button
+            label="Cancel"
+            name="cancel"
+            variant="Neutral"
+            onclick={cancel}
+            slot="footer"
+            disabled={disableSave}
+            padding="horizontal-small"
+        ></lightning-button>
+
+        <!-- HEADER ROW -->
+        <!-- body of card using lighting layout grid system -->
+        <lightning-layout-item size="12">
+            <!-- tier info columns -->
+            <lightning-layout>
+                <!-- column 1 -->
+                <lightning-layout-item size="3" padding="horizontal-medium">
+                    {labels.Level__c}
+                </lightning-layout-item>
+                <!-- column 2 -->
+                <lightning-layout-item size="3" padding="horizontal-medium">
+                    {labels.Name}
+                </lightning-layout-item>
+                <!-- column 3 -->
+                <lightning-layout-item size="3" padding="horizontal-medium">
+                    {labels.Label__c}
+                </lightning-layout-item>
+                <!-- column 4 -->
+                <lightning-layout-item size="3" padding="horizontal-medium">
+                    {labels.Count_Floor__c}
+                </lightning-layout-item>
+                
+            </lightning-layout>
+        </lightning-layout-item>
+
+        <!-- ROWS -->
+        <lightning-layout multiple-rows>
+            <!-- iterate through already created tiers and display information -->
+            <template iterator:tier={tiers}>
+                    <!-- tier info row -->
+                    <lightning-layout-item key={tier.value.Id} size="12">
+                        <!-- tier info columns -->
+                        <lightning-layout>
+                            <!-- column 1 -->
+                            <lightning-layout-item size="3" padding="horizontal-medium">
+                                <div>{tier.value.Level__c}</div>
+                            </lightning-layout-item>
+                            <!-- column 2 -->
+                            <lightning-layout-item size="3" padding="horizontal-medium">
+                                <lightning-input 
+                                    value={tier.value.Name} 
+                                    placeholder="Please Enter Name" 
+                                    disabled={newTier}
+                                    variant="label-hidden"
+                                    onchange={handleNameChange}
+                                    data-record-id={tier.value.Id}
+                                    required>
+                                </lightning-input>
+                            </lightning-layout-item>
+                            <!-- column 3 -->
+                            <lightning-layout-item size="3" padding="horizontal-medium">
+                                <lightning-input 
+                                    value={tier.value.Label__c} 
+                                    placeholder="Please Enter Label" 
+                                    disabled={newTier}
+                                    variant="label-hidden"
+                                    onchange={handleLabelChange}
+                                    data-record-id={tier.value.Id}
+                                    required>
+                                </lightning-input>
+                            </lightning-layout-item>
+                            <!-- column 4 -->
+                            <lightning-layout-item size="3" padding="horizontal-medium">
+
+                                <lightning-layout>
+                                    <lightning-layout-item size="9">
+                                        <lightning-input 
+                                            value={tier.value.Count_Floor__c} 
+                                            placeholder="Pleasee Enter Count Floor" 
+                                            type="number" 
+                                            disabled={newTier}
+                                            variant="label-hidden"
+                                            onchange={handleCountChange}
+                                            data-record-id={tier.value.Id}
+                                            required>
+                                        </lightning-input>
+                                    </lightning-layout-item>
+
+                                    <lightning-layout-item size="3" class="slds-align_absolute-center">
+                                        <!-- DELETE BUTTON -->
+                                        <lightning-button
+                                            if:true={tier.last}
+                                            title="Delete"
+                                            icon-name="utility:clear"
+                                            data-record-id={tier.value.Id}
+                                            variant="base"
+                                            onclick={remove}>
+                                        </lightning-button>
+                                    </lightning-layout-item>
+                                </lightning-layout>
+
+                            </lightning-layout-item>
+                        </lightning-layout>
+                    </lightning-layout-item>
+            </template>
+
+            <!-- NEW ROW -->
+            <lightning-layout-item if:true={newTier} size="12">
+                <!-- tier info columns -->
+                <lightning-layout>
+                    <!-- column 1 -->
+                    <lightning-layout-item size="3" padding="horizontal-medium">
+                        <div>{newTier.Level__c}</div>
+                    </lightning-layout-item>
+                    <!-- column 2 -->
+                    <lightning-layout-item size="3" padding="horizontal-medium">
+                        <lightning-input 
+                            value={newTier.Name} 
+                            placeholder="Please Enter Name"
+                            variant="label-hidden"
+                            onchange={handleNameChange}
+                            required>
+                        </lightning-input>
+                    </lightning-layout-item>
+                    <!-- column 3 -->
+                    <lightning-layout-item size="3" padding="horizontal-medium">
+                        <lightning-input 
+                            value={newTier.Label__c} 
+                            placeholder="Please Enter Label"
+                            variant="label-hidden" 
+                            onchange={handleLabelChange}
+                            required>
+                        </lightning-input>
+                    </lightning-layout-item>
+                    <!-- column 4 -->
+                    <lightning-layout-item size="3" padding="horizontal-medium">
+                        
+                        <lightning-layout>
+                            <lightning-layout-item size="9">
+                                <lightning-input 
+                                    value={newTier.Count_Floor__c} 
+                                    placeholder="Please Enter Count Floor" 
+                                    type="number" 
+                                    variant="label-hidden"
+                                    onchange={handleCountChange}
+                                    required>
+                                </lightning-input>
+                            </lightning-layout-item>
+                            <lightning-layout-item size="3">
+                            </lightning-layout-item>
+                        </lightning-layout>
+
+                    </lightning-layout-item>
+
+                </lightning-layout>
+            </lightning-layout-item>
+
+        </lightning-layout>   
+
+    </lightning-card>
+
+</template>
